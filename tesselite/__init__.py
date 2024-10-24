@@ -53,6 +53,6 @@ class GCPEnv:
     from dotenv import load_dotenv
     load_dotenv()
     GOOGLE_PROJECT = load('GOOGLE_PROJECT')
-    GOOGLE_APPLICATION_CREDENTIALS = load('GOOGLE_APPLICATION_CREDENTIALS')
+    GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
     TOPIC_NAME = 'tesselite-pubsub'
     SUBSCRIPTION_NAME = 'tesselite'

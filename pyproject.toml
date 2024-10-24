@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tesselite-pubsub"
-version = "0.1.2"
+version = "0.1.3"
 description = "general sugarcoat for all pubsub flavors."
 authors = ["Marcel Ndeffo <marcel.nasser@live.fr>"]
 license = "MIT"
