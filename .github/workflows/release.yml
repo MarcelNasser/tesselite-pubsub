@@ -1,9 +1,10 @@
 name: Release Package
 
 on:
+  workflow_dispatch:
   push:
-    tags:
-      - "*"
+    branches:
+      - main
 
 jobs:
   build:
