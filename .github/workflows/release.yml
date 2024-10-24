@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
       - 'release-*'
+    paths:
+      - pyproject.toml
 
 jobs:
   build:
@@ -39,7 +40,7 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
-      # install dependencies if cache does not exist
+      # check if package is building properly
       #----------------------------------------------
       - name: test build
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
