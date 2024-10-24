@@ -1,0 +1,34 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 3600 10000 --loglevel warning --requirepass tesselite
+    volumes:
+      - redis:/data
+    networks:
+      tesselite-network:
+        ipv4_address: 10.30.0.5
+
+  pubsub:
+    image: google/cloud-sdk:emulators
+    container_name: pubsub
+    command: gcloud beta emulators pubsub start --project=tesselite-dev --host-port='0.0.0.0:8085'
+    ports:
+      - '8085:8085'
+    networks:
+      tesselite-network:
+        ipv4_address: 10.30.0.8
+
+networks:
+  tesselite-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.30.0.0/24
+
+volumes:
+  redis:
+    driver: local

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "tesselite-pubsub"
+version = "0.1.0"
+description = "general sugarcoat for all pubsub flavors."
+authors = ["Marcel Ndeffo <marcel.nasser@live.fr>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "tesselite"},
+            {include = "samples"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+google-cloud-pubsub = "^2.26.1"
+redis = "^5.1.1"
+retry = "^0.9.2"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
