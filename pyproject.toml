@@ -5,8 +5,7 @@ description = "general sugarcoat for all pubsub flavors."
 authors = ["Marcel Ndeffo <marcel.nasser@live.fr>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "tesselite"},
-            {include = "samples"}]
+packages = [{include = "tesselite"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9"
