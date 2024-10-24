@@ -14,5 +14,5 @@ def encoder():
         sleep(5)
 
 if __name__ == '__main__':
-    main(broker='gcp_pubsub', callback=callback, encoder=encoder, timeout=3600)
+    main(broker='gcp-pubsub', callback=callback, encoder=encoder, timeout=3600)
 

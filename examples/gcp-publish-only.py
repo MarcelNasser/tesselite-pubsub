@@ -15,5 +15,5 @@ def encoder():
 
 
 if __name__ == '__main__':
-    publish(broker='gcp_pubsub', encoder=encoder)
+    publish(broker='gcp-pubsub', encoder=encoder)
 

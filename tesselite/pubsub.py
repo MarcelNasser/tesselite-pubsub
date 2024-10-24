@@ -14,7 +14,7 @@ from google.cloud.pubsub_v1 import PublisherClient as google_publisher_client
 from google.cloud.pubsub_v1 import SubscriberClient as google_subscriber_client
 import socket
 
-from tesselite import GCPEnv
+from tesselite import GCPEnv, root_logger
 from tesselite.exceptions import connexion
 from tesselite.exceptions import MessageProcessingException
 
@@ -262,11 +262,12 @@ def pubsubFactory(broker:str = BROKER) -> Union[type(RedisPubsub), type(GCPPubSu
     :type broker: str: broker backend.
         supported:
           - redis
-          - gcp_pubsub
+          - gcp-pubsub
     """
     if broker.upper() == "REDIS":
         return RedisPubsub
-    elif broker.upper() == "GCP_PUBSUB":
+    elif broker.upper() == "GCP-PUBSUB":
         return GCPPubSub
     else:
-        raise NotImplementedError(f"Broker type <{BROKER}>")
+        root_logger.fatal(f"Broker type <{BROKER}> not available yet.")
+        exit(1)
