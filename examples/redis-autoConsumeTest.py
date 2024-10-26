@@ -1,4 +1,4 @@
-from tesselite.samples import main
+from tesselite.samples import autoConsumeTest
 
 
 def callback(message):
@@ -11,8 +11,8 @@ def encoder():
         msg = {"uid": i, "payload": f"( publish-subscribe ) hello world!"}
         print(f"sent this: {msg}")
         yield json.dumps(msg)
-        sleep(1)
+        sleep(5)
 
 if __name__ == '__main__':
-    main(broker='redis', callback=callback, encoder=encoder, timeout=3600)
+    autoConsumeTest(broker='redis', callback=callback, encoder=encoder, timeout=360)
 

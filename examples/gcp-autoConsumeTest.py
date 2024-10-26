@@ -1,4 +1,4 @@
-from tesselite.samples import main
+from tesselite.samples import autoConsumeTest
 import json
 from time import sleep
 
@@ -14,5 +14,5 @@ def encoder():
         sleep(5)
 
 if __name__ == '__main__':
-    main(broker='gcp-pubsub', callback=callback, encoder=encoder, timeout=3600)
+    autoConsumeTest(broker='gcp-pubsub', callback=callback, encoder=encoder, timeout=360)
 
