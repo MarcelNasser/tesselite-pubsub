@@ -3,6 +3,8 @@ name: Ci
 on:
   workflow_dispatch:
   push:
+    branches:
+      - '*'
     paths:
       - pyproject.toml
       - tesselite
