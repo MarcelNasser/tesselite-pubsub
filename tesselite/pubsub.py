@@ -2,10 +2,8 @@
 Handle messaging (publish/consume)
 """
 import abc
-import os
 from typing import Union
 import redis
-from dotenv import load_dotenv
 from typing import Callable
 
 from google.api_core import exceptions as google_api_core_exceptions
@@ -13,13 +11,9 @@ from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1 import SubscriberClient
 import socket
 
-from tesselite import GCPEnv, root_logger
+from tesselite import Logger, App
 from tesselite.exceptions import connexion
 from tesselite.exceptions import MessageProcessingException
-
-# Select broker's type
-load_dotenv()
-BROKER = os.environ.get("BROKER", "GCP_PUBSUB")
 
 
 class Pubsub(abc.ABC):
@@ -54,10 +48,9 @@ class Pubsub(abc.ABC):
 class RedisPubsub(Pubsub):
 
     def __init__(self, topic: str, log_name: str = "redis-pubsub"):
-        from tesselite import Logger
+        from tesselite.config import RedisEnv
         self.logger = Logger(log_name)
         self.log_name = log_name
-        from tesselite import RedisEnv
         self.logger.debug("loading ..")
         self._pubsub = None
         self._env = RedisEnv()
@@ -136,6 +129,7 @@ class GCPPubSub(Pubsub):
 
     def __init__(self, topic: str, log_name: str = "pubsub-gcp"):
         from tesselite import Logger
+        from tesselite.config import GCPEnv
         self.logger = Logger(log_name)
         self._topic_path = None
         self.logger.debug("loading ..")
@@ -276,7 +270,7 @@ class GCPPubSub(Pubsub):
                 raise
 
 
-def pubsubFactory(broker: str = BROKER) -> Union[type(RedisPubsub), type(GCPPubSub)]:
+def pubsubFactory(broker: str = App.BrokerType) -> Union[type(RedisPubsub), type(GCPPubSub)]:
     """creates a publisher object
     :type broker: str: broker backend.
         supported:
@@ -288,5 +282,5 @@ def pubsubFactory(broker: str = BROKER) -> Union[type(RedisPubsub), type(GCPPubS
     elif broker.upper() == "GCP-PUBSUB":
         return GCPPubSub
     else:
-        root_logger.fatal(f"Broker type <{BROKER}> not available yet.")
+        App.Logger.fatal(f"Broker type <{broker}> not available yet.")
         exit(1)

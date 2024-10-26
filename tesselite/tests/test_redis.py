@@ -5,7 +5,6 @@ from unittest.mock import patch
 
 class TestRedisPubsub(unittest.TestCase):
 
-    @patch('dotenv.load_dotenv')
     def test_import(self):
 
         from tesselite.pubsub import RedisPubsub

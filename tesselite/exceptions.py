@@ -5,14 +5,14 @@ from retry import retry
 
 def graceful(action: Callable):
 
-    from tesselite import root_logger
+    from tesselite import App
 
     def run(*args, **kwargs):
 
         try:
             return action(*args, **kwargs)
         except KeyboardInterrupt:
-            root_logger.info("bye.")
+            App.Logger.info("bye.")
         except:
             raise
 
@@ -23,7 +23,7 @@ def graceful(action: Callable):
 
 def connexion(expected_errors:tuple, noisy_errors:tuple=()):
 
-    from tesselite import root_logger
+    from tesselite import App
 
     def run(action:Callable):
 
@@ -32,15 +32,15 @@ def connexion(expected_errors:tuple, noisy_errors:tuple=()):
             try:
                 return action(*args, **kwargs)
             except expected_errors as err:
-                root_logger.error(f"({action.__name__}) connexion error [{err.__class__.__name__}] => backoff.")
+                App.Logger.error(f"({action.__name__}) connexion error [{err.__class__.__name__}] => backoff.")
                 raise
             except noisy_errors as err:
-                root_logger.debug(f"({action.__name__}) connexion error [{err.__class__.__name__}] => backoff.")
+                App.Logger.debug(f"({action.__name__}) connexion error [{err.__class__.__name__}] => backoff.")
                 raise
             except KeyboardInterrupt:
                 raise
             except Exception as err:
-                root_logger.error(f"({action.__name__}) unknown error => {err}")
+                App.Logger.error(f"({action.__name__}) unknown error => {err}")
                 raise
 
         return inner
