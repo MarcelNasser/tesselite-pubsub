@@ -1,10 +1,15 @@
 import abc
 import unittest
+from unittest.mock import patch
+
+from tesselite import ConfigurationException
 
 
 class TestGCPPubsub(unittest.TestCase):
 
-    def test_import(self):
+    @patch('tesselite.load')
+    @patch('dotenv.load_dotenv')
+    def test_import(self, *mocked):
 
         from tesselite.pubsub import GCPPubSub
 
