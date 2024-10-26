@@ -1,4 +1,4 @@
-name: Ci
+name: Release Package
 
 on:
   workflow_dispatch:
