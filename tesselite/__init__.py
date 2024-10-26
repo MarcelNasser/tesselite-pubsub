@@ -47,6 +47,7 @@ class RedisEnv:
     DB = int(os.environ.get("REDIS_DB", "0"))
     PASSWORD = os.environ.get("REDIS_PASSWORD", "")
     TOPIC_NAME = 'tesselite-pubsub'
+    SUBSCRIPTION_NAME = 'tesselite'
 
 
 class GCPEnv:

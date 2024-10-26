@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - 'release-*'
+      - 'change-*'
     paths:
       - pyproject.toml
 
@@ -46,6 +47,7 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: | 
           poetry build
+          poetry run python -m unittest discover tesselite/
 
   release:
 

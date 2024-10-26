@@ -35,7 +35,7 @@ def connexion(expected_errors:tuple, noisy_errors:tuple=()):
                 root_logger.error(f"({action.__name__}) connexion error [{err.__class__.__name__}] => backoff.")
                 raise
             except noisy_errors as err:
-                root_logger.warning(f"({action.__name__}) connexion error [{err.__class__.__name__}] => backoff.")
+                root_logger.debug(f"({action.__name__}) connexion error [{err.__class__.__name__}] => backoff.")
                 raise
             except KeyboardInterrupt:
                 raise
