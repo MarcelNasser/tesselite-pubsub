@@ -46,8 +46,8 @@ jobs:
       - name: test build
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: | 
-          poetry build
-          poetry run python -m unittest discover tesselite/
+          poetry install
+          poetry run unittest
 
   release:
 

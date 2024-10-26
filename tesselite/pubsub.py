@@ -4,7 +4,6 @@ Handle messaging (publish/consume)
 import abc
 import os
 from typing import Union
-import google
 import redis
 from dotenv import load_dotenv
 from typing import Callable
