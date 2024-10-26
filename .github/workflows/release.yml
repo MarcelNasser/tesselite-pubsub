@@ -8,6 +8,7 @@ on:
       - 'change-*'
     paths:
       - pyproject.toml
+      - poetry.lock
       - .github/workflows/release.yml
 
 jobs:
