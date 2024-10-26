@@ -6,7 +6,7 @@ on:
     paths:
       - pyproject.toml
       - tesselite
-      - .git/workflow/ci.yaml
+      - .git/workflows/ci.yaml
 
 jobs:
 

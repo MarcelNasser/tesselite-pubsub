@@ -8,7 +8,7 @@ on:
       - 'change-*'
     paths:
       - pyproject.toml
-      - .git/workflow/release.yaml
+      - .git/workflows/release.yaml
 
 jobs:
   build:
