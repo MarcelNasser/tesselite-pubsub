@@ -44,7 +44,6 @@ jobs:
       # check if package is building properly
       #----------------------------------------------
       - name: test build
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: | 
           poetry install
           poetry run unittest
@@ -70,4 +69,4 @@ jobs:
       - name: publish
         run: |
           poetry config pypi-token.pypi ${{secrets.PYPI_TOKEN}}
-          poetry publish --build
+          poetry publish --build --skip-existing
