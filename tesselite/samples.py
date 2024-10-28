@@ -2,7 +2,7 @@ import threading
 from time import sleep
 from typing import Callable, Type
 
-from tesselite import root_logger
+from tesselite import App
 from tesselite.exceptions import graceful
 from tesselite.pubsub import pubsubFactory
 from tesselite.schemas import Message
@@ -81,7 +81,7 @@ def consumeAndPublish(broker: str, transform: Callable,
     :return: None
     """
     if topic_in == topic_out:
-        root_logger.warning("circular consumption detected.")
+        App.Logger.warning("circular consumption detected.")
 
     with pubsubFactory(broker=broker)(topic=topic_out, log_name="consumeAndPublish") as publisher:
         def callback(message):

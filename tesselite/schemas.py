@@ -1,6 +1,6 @@
 import json
 from typing import Union
-from tesselite import root_logger
+from tesselite import App
 from tesselite.exceptions import MessageProcessingException
 
 
@@ -14,7 +14,7 @@ class Message:
         elif isinstance(content, dict):
             self.content = content
         else:
-            root_logger.error(f"unsupported message type: {type(content)}")
+            App.Logger.error(f"unsupported message type: {type(content)}")
             raise MessageProcessingException(content)
 
     def serialize(self) -> str:
