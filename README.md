@@ -1,16 +1,18 @@
 # tesselite-pubsub
-general sugarcoat for all pubsub flavors.
+![ci](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/ci.yml/badge.svg)
+![cd](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/release.yml/badge.svg)
 
-## pubsub
-Publish Subscribe is a pretty simple mechanism understandable by any human. 
+General sugarcoat for all pubsub flavors.
 
-For example, it is the ruling mechanism of all Social Networks. 
 
-But, yet very complex to code in Python given the variety of backends logic (redis, rabbitMQ, kafka, GCP PubSub, Azure Event Hubs..)
+## purpose
+Publish Subscribe is a pretty simple mechanism understandable by any human. For example, it is the ruling mechanism of all social networks. 
 
-The goal of this library is to streamline the coding of Pubsub in two simple calls:
+But, in Python, pubsub is very complex to code given the variety of broker technologies (redis, rabbitMQ, kafka, GCP PubSub, Azure Event Hubs..)
 
----
+The purpose of this library is to streamline the coding of Pubsub in a **single-line** call!
+
+
 ## usage
 
 Available Brokers:
@@ -20,10 +22,17 @@ Available Brokers:
 | gcp-pubsub    | Goggle Cloud Pubsub | google-cloud-pubsub = "^2.26.1" |
 | redis         | Redis               | redis = "^5.1.1"                |
 
+Unvailable Brokers:
+
+| internal name | official name       | client library                  |
+|---------------|---------------------|---------------------------------|
+| rabbitmq      | RabbitMQ            | todo                            |
+| kafka         | Apache Kafka        | todo                            |
+
 
 ### low level usage
 
-*consume*
+#### consume
 
 ````python
 from tesselite.pubsub import pubsubFactory
@@ -37,8 +46,7 @@ with pubsubFactory(broker="gcp-pubsub")(topic="tesselite-pubsub", log_name="cons
 
 ````
 
-*publish*
-
+#### publish
 
 ````python
 from tesselite.pubsub import pubsubFactory
@@ -56,7 +64,7 @@ with pubsubFactory(broker="gcp-pubsub")(topic="tesselite-pubsub", log_name="publ
 
 ### high level usage
 
-*consume*
+#### consume
 
 ````python
 from tesselite.samples import consume # importing consume sample
@@ -69,26 +77,26 @@ if __name__ == '__main__':
     consume(broker='gcp-pubsub', callback=callback) # single-lined consume loop (default topic: tesselite-pubsub
 ````
 
-*publish*
+#### publish
 
 ````python
-from tesselite.samples import consume # importing consume sample
+from tesselite.samples import publish # importing publish sample
 
 
-def callback(message): # callback function inputs serialized message 
-    print(f"received this: {message}")
+def encoder(): # callback function inputs serialized message 
+    yield "hello"
 
 if __name__ == '__main__':
-    consume(broker='gcp-pubsub', callback=callback) # single-lined consume loop (default topic: tesselite-pubsub
+    publish(broker='gcp-pubsub', encoder=encoder) # single-lined publish call (default topic: tesselite-pubsub
 ````
 
----
 
-## Behavior
+## behavior
 
 ### Best Case Scenario
 
-The interface to all broker backends technology is generic. One would swap seamlessly to any broker technology:
+All broker backends technology implements the same interface →
+One would swap seamlessly to any broker technology by shifting the broker's name:
 
 ````python
 from tesselite import pubsubFactory
@@ -100,9 +108,20 @@ client_gcp = pubsubFactory(broker="gcp-pubsub")(topic="tesselite-pubsub", log_na
 client_redis = pubsubFactory(broker="redis")(topic="tesselite-pubsub", log_name="tesselite")
 ````
 
-The connection to broker auto-heals when the broker backend is unavailable.
+The connection to broker auto-heals when the broker backend is unavailable →
+When auto-healing happens the log trace ould looks like this:
+````text
+[tesselite][ERROR][2024-10-28 06:22:07] (open) connexion error [ConnectionError] => backoff.
+[tesselite][ERROR][2024-10-28 06:22:13] (open) connexion error [ConnectionError] => backoff.
+[tesselite][ERROR][2024-10-28 06:22:21] (open) connexion error [ConnectionError] => backoff.
+[consume][INFO][2024-10-28 06:22:29] ready.
+received this: {"uid": 0, "payload": "( publish ) hello world!"}
+received this: {"uid": 1, "payload": "( publish ) hello world!"}
+received this: {"uid": 2, "payload": "( publish ) hello world!"}
+````
 
-The generic mechanics bellow works for all broker backends:
+The guarantee the fail-proof onboarding to the broker →
+The procedure below is applied seamlessly to all broker technologies:
 1. topic checkout
 2. topic creation
 3. subscription checkout
@@ -110,7 +129,7 @@ The generic mechanics bellow works for all broker backends:
 5. publish or consume
 
 
-### Pathologic Behaviors
+### Worst Case Scenario
 
 A) 
 Messages are lost if the subscription doesn't exist →
@@ -127,3 +146,7 @@ This would generate sluggishness from time to time.
 Therefore, the broker `redis` is ideal for livestreaming but not for message retention critical PaaS.
 
 Therefore, the broker `gcp-pubsub` is ideal for message retention critical PaaS but maybe sluggish for livestream.
+
+## releases
+
+#### [Notes](CHANGELOG.md)
