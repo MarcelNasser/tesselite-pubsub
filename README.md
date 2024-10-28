@@ -109,7 +109,7 @@ client_redis = pubsubFactory(broker="redis")(topic="tesselite-pubsub", log_name=
 ````
 
 The connection to broker auto-heals when the broker backend is unavailable →
-When auto-healing happens the log trace ould looks like this:
+When auto-healing happens the log trace looks like this:
 ````text
 [tesselite][ERROR][2024-10-28 06:22:07] (open) connexion error [ConnectionError] => backoff.
 [tesselite][ERROR][2024-10-28 06:22:13] (open) connexion error [ConnectionError] => backoff.
@@ -120,8 +120,9 @@ received this: {"uid": 1, "payload": "( publish ) hello world!"}
 received this: {"uid": 2, "payload": "( publish ) hello world!"}
 ````
 
-The guarantee the fail-proof onboarding to the broker →
-The procedure below is applied seamlessly to all broker technologies:
+The procedure below is applied seamlessly to all broker technologies →
+To guarantee a fail-proof onboarding to the broker:
+
 1. topic checkout
 2. topic creation
 3. subscription checkout
