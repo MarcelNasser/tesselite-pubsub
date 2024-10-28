@@ -254,7 +254,7 @@ class GCPPubSub(Pubsub):
             self.logger.debug("checking ..")
             self._subscription = subscription if subscription is not None else self._env.SUBSCRIPTION_NAME
             # append topic name to create 1:1 mapping with topic
-            self._subscription = self._subscription+ '-' + self._topic
+            self._subscription = f"s-{self._subscription}-t-{self._topic}"
             self._subscription_path = self._subscriber_client.subscription_path(subscription=self._subscription,
                                                                                 project=self._env.GOOGLE_PROJECT)
             self.check_subscription()
