@@ -1,4 +1,17 @@
 services:
+  rabbitmq:
+    image: marcelndeffo/tools:alpine-rabbitmq
+    hostname: tesselite
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+      - .conf/rabbitmq.conf:/etc/rabbitmq/conf.d/rabbitmq.conf:ro
+    networks:
+      tesselite-network:
+        ipv4_address: 10.30.0.2
+
   redis:
     image: redis:latest
     container_name: redis
@@ -12,9 +25,9 @@ services:
       tesselite-network:
         ipv4_address: 10.30.0.5
 
-  pubsub:
+  gcp:
     image: google/cloud-sdk:emulators
-    container_name: pubsub
+    container_name: gcp
     command: gcloud beta emulators pubsub start --project=tesselite-dev --host-port='0.0.0.0:8085'
     ports:
       - '8085:8085'
@@ -32,3 +45,4 @@ networks:
 volumes:
   redis:
     driver: local
+  rabbitmq:
