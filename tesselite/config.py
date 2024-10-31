@@ -14,7 +14,7 @@ class RedisEnv:
     HOST = os.environ.get("REDIS_HOST", "localhost")
     PORT = int(os.environ.get("REDIS_PORT", "6379"))
     DB = int(os.environ.get("REDIS_DB", "0"))
-    PASSWORD = os.environ.get("REDIS_PASSWORD", "")
+    PASSWORD = os.environ.get("REDIS_PASSWORD", "tesselite")
     TOPIC_NAME = 'tesselite-pubsub'
     SUBSCRIPTION_NAME = 'tesselite'
 
@@ -26,6 +26,17 @@ class GCPEnv:
     GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
     TOPIC_NAME = 'tesselite-pubsub'
     SUBSCRIPTION_NAME = 'tesselite'
+
+class RabbitMQEnv:
+    from dotenv import load_dotenv
+    load_dotenv()
+    HOST = os.environ.get("RABBITMQ_HOST", "localhost")
+    PORT = int(os.environ.get("RABBITMQ_PORT", "5672"))
+    USER = os.environ.get("RABBITMQ_USER", "tesselite")
+    PASSWORD = os.environ.get("RABBITMQ_PASSWORD", "tesselite")
+    TOPIC_NAME = 'tesselite-pubsub'
+    SUBSCRIPTION_NAME = 'tesselite'
+    VHOST = '/'
 
 
 

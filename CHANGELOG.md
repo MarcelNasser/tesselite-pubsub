@@ -1,4 +1,9 @@
-# Changes
+# Notes
+
+## [0.1.9]
+
+- add: rabbitmq support
+
 
 ## [0.1.8]
 

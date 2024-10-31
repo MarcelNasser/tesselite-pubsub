@@ -5,11 +5,15 @@ import abc
 from typing import Union
 import redis
 from typing import Callable
+import pika
 
 from google.api_core import exceptions as google_api_core_exceptions
 from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1 import SubscriberClient
 import socket
+
+from pika.exceptions import ProbableAuthenticationError, StreamLostError, IncompatibleProtocolError, \
+    AMQPConnectionError, ConnectionWrongStateError
 
 from tesselite import Logger, App
 from tesselite.exceptions import connexion
@@ -127,7 +131,7 @@ class RedisPubsub(Pubsub):
 
 class GCPPubSub(Pubsub):
 
-    def __init__(self, topic: str, log_name: str = "pubsub-gcp"):
+    def __init__(self, topic: str, log_name: str = "gcp-pubsub"):
         from tesselite import Logger
         from tesselite.config import GCPEnv
         self.logger = Logger(log_name)
@@ -269,6 +273,70 @@ class GCPPubSub(Pubsub):
             except Exception:
                 raise
 
+class RabbitMQPubSub(Pubsub):
+    def __init__(self, topic: str, log_name: str = "rabbitmq-pubsub"):
+        from tesselite import Logger
+        from tesselite.config import RabbitMQEnv
+        self.logger = Logger(log_name)
+        self.logger.debug("loading ..")
+        self._env = RabbitMQEnv()
+        self._topic = topic if topic else self._env.TOPIC_NAME
+        self._connection: pika.adapters.blocking_connection.BlockingConnection = None
+        self._channel: pika.adapters.blocking_connection.BlockingChannel = None
+
+    @connexion(
+        expected_errors=(ProbableAuthenticationError,
+                         IncompatibleProtocolError,
+                         AMQPConnectionError,
+                         ConnectionWrongStateError),
+        noisy_errors=())
+    def open(self):
+        credentials = pika.PlainCredentials(username=self._env.USER, password=self._env.PASSWORD)
+        parameters = pika.ConnectionParameters(self._env.HOST, self._env.PORT, self._env.VHOST, credentials)
+        self._connection = pika.BlockingConnection(parameters)
+        self._channel = self._connection.channel()
+        self._channel.exchange_declare(exchange=self._topic, exchange_type='topic')
+
+    def close(self):
+        self._channel.cancel()
+        self._connection.close()
+
+
+    @connexion(
+        expected_errors=(ProbableAuthenticationError, IncompatibleProtocolError,
+                         AMQPConnectionError, ConnectionWrongStateError),
+        noisy_errors=())
+    def check_subscription(self, subscription):
+        queue = subscription if subscription is not None else self._env.SUBSCRIPTION_NAME
+        self._channel.queue_declare(queue=queue)
+        self._channel.queue_bind(queue=queue, exchange=self._topic, routing_key=queue)
+        return queue
+
+    def check_connection(self):
+        if self._connection is None or self._connection.is_closed:
+            self.open()
+
+    @connexion(
+        expected_errors=(ProbableAuthenticationError, IncompatibleProtocolError,
+                         AMQPConnectionError, ConnectionWrongStateError),
+        noisy_errors=())
+    def publish(self, msg: str, subscription:str='tesselite'):
+        self.check_connection()
+        self._channel.basic_publish(exchange=self._topic,
+                                    routing_key=subscription,
+                                    body=msg.encode())
+
+    @connexion(
+        expected_errors=(ProbableAuthenticationError, IncompatibleProtocolError,
+                         AMQPConnectionError, ConnectionWrongStateError),
+        noisy_errors=())
+    def consume(self, callback: Callable, deadLetter: str = None, subscription='tesselite'):
+        self.check_connection()
+        queue = self.check_subscription(subscription=subscription)
+        for method_frame, properties, body in self._channel.consume(queue):
+            callback(body.decode())
+            self._channel.basic_ack(method_frame.delivery_tag)
+
 
 def pubsubFactory(broker: str = App.BrokerType) -> Union[type(RedisPubsub), type(GCPPubSub)]:
     """creates a publisher object
@@ -276,11 +344,14 @@ def pubsubFactory(broker: str = App.BrokerType) -> Union[type(RedisPubsub), type
         supported:
           - redis
           - gcp-pubsub
+          - rabbitmq
     """
     if broker.upper() == "REDIS":
         return RedisPubsub
     elif broker.upper() == "GCP-PUBSUB":
         return GCPPubSub
+    elif broker.upper() == "RABBITMQ":
+        return RabbitMQPubSub
     else:
         App.Logger.fatal(f"Broker type <{broker}> not available yet.")
         exit(1)

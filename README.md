@@ -21,12 +21,12 @@ Available Brokers:
 |---------------|---------------------|---------------------------------|
 | gcp-pubsub    | Goggle Cloud Pubsub | google-cloud-pubsub = "^2.26.1" |
 | redis         | Redis               | redis = "^5.1.1"                |
+| rabbitmq      | RabbitMQ            | pika = "^1.3.2"                 |
 
-Unvailable Brokers:
+Not available Brokers:
 
 | internal name | official name       | client library                  |
 |---------------|---------------------|---------------------------------|
-| rabbitmq      | RabbitMQ            | todo                            |
 | kafka         | Apache Kafka        | todo                            |
 
 
@@ -74,7 +74,7 @@ def callback(message): # callback function inputs serialized message
     print(f"received this: {message}")
 
 if __name__ == '__main__':
-    consume(broker='gcp-pubsub', callback=callback) # single-lined consume loop (default topic: tesselite-pubsub
+    consume(broker='rabbitmq', callback=callback) # single-lined consume loop (default topic: tesselite-pubsub
 ````
 
 #### publish
@@ -87,7 +87,7 @@ def encoder(): # callback function inputs serialized message
     yield "hello"
 
 if __name__ == '__main__':
-    publish(broker='gcp-pubsub', encoder=encoder) # single-lined publish call (default topic: tesselite-pubsub
+    publish(broker='rabbitmq', encoder=encoder) # single-lined publish call (default topic: tesselite-pubsub
 ````
 
 
@@ -101,8 +101,8 @@ One would swap seamlessly to any broker technology by shifting the broker's name
 ````python
 from tesselite import pubsubFactory
 
-# broker : gcp-pubsub
-client_gcp = pubsubFactory(broker="gcp-pubsub")(topic="tesselite-pubsub", log_name="tesselite")
+# broker : rabbitmq
+client_gcp = pubsubFactory(broker="rabbitmq")(topic="tesselite-pubsub", log_name="tesselite")
 
 # broker : redis
 client_redis = pubsubFactory(broker="redis")(topic="tesselite-pubsub", log_name="tesselite")

@@ -1,6 +1,5 @@
 import abc
 import unittest
-from unittest.mock import patch
 
 
 class TestRedisPubsub(unittest.TestCase):
