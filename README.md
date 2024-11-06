@@ -1,6 +1,6 @@
 # tesselite-pubsub
-![ci](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/ci.yml/badge.svg)
-![cd](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/release.yml/badge.svg)
+![ci](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/ci.yml/badge.svg "automated ci")
+![cd](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/release.yml/badge.svg "automated release")
 
 General sugarcoat for all pubsub flavors.
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
 ### Best Case Scenario
 
-All broker backends technology implements the same interface →
+The same programmatic interface is used for all brokers →
 One would swap seamlessly to any broker technology by shifting the broker's name:
 
 ````python
