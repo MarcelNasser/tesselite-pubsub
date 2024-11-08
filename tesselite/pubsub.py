@@ -144,7 +144,7 @@ class GCPPubSub(Pubsub):
         self._subscription_path = None
         self._publisher_client = None
         self._subscriber_client = None
-        self.logger.debug("\n"
+        self.logger.info("\n"
                           f"\tBROKER: GCP\n"
                           f"\tPROJECT: {self._env.GOOGLE_PROJECT}\n"
                           f"\tTOPIC: {self._topic}\n"
@@ -283,6 +283,14 @@ class RabbitMQPubSub(Pubsub):
         self._topic = topic if topic else self._env.TOPIC_NAME
         self._connection: pika.adapters.blocking_connection.BlockingConnection = None
         self._channel: pika.adapters.blocking_connection.BlockingChannel = None
+        self.logger.info("\n"
+                         f"\tBROKER: RABBITMQ\n"
+                         f"\tTOPIC: {self._topic}\n"
+                         f"\tHOST: {self._env.HOST}\n"
+                         f"\tPORT: {self._env.PORT}\n"
+                         f"\tCREDENTIALS: "
+                         f"( {'hidden' if self._env.PASSWORD else 'empty'} )"
+        )
 
     @connexion(
         expected_errors=(ProbableAuthenticationError,
