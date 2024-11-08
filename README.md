@@ -147,7 +147,3 @@ This would generate sluggishness from time to time.
 Therefore, the broker `redis` is ideal for livestreaming but not for message retention critical PaaS.
 
 Therefore, the broker `gcp-pubsub` is ideal for message retention critical PaaS but maybe sluggish for livestream.
-
-## releases
-
-#### [Notes](CHANGELOG.md)

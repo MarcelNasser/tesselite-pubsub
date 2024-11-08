@@ -1,6 +1,10 @@
 # Notes
 
-## [0.1.9]
+## [0.2.1]
+
+- chore: display host infos in logs 
+
+## [0.2.0]
 
 - add: rabbitmq support
 

@@ -7,7 +7,6 @@ services:
       - '5672:5672'
     volumes:
       - rabbitmq:/var/lib/rabbitmq
-      - .conf/rabbitmq.conf:/etc/rabbitmq/conf.d/rabbitmq.conf:ro
     networks:
       tesselite-network:
         ipv4_address: 10.30.0.2

@@ -19,8 +19,6 @@ def graceful(action: Callable):
     return run
 
 
-
-
 def connexion(expected_errors:tuple, noisy_errors:tuple=()):
 
     from tesselite import App
