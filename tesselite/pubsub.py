@@ -328,7 +328,7 @@ class RabbitMQPubSub(Pubsub):
         expected_errors=(ProbableAuthenticationError, IncompatibleProtocolError,
                          AMQPConnectionError, ConnectionWrongStateError),
         noisy_errors=())
-    def publish(self, msg: str, subscription:str='tesselite'):
+    def publish(self, msg: str, subscription:str='*'):
         self.check_connection()
         self._channel.basic_publish(exchange=self._topic,
                                     routing_key=subscription,
@@ -338,7 +338,7 @@ class RabbitMQPubSub(Pubsub):
         expected_errors=(ProbableAuthenticationError, IncompatibleProtocolError,
                          AMQPConnectionError, ConnectionWrongStateError),
         noisy_errors=())
-    def consume(self, callback: Callable, deadLetter: str = None, subscription='tesselite'):
+    def consume(self, callback: Callable, deadLetter: str = None, subscription='*'):
         self.check_connection()
         queue = self.check_subscription(subscription=subscription)
         for method_frame, properties, body in self._channel.consume(queue):

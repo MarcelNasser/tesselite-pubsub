@@ -9,7 +9,7 @@ from tesselite.schemas import Message
 
 
 @graceful
-def publish(broker: str, encoder: Callable, topic: str = None):
+def publish(broker: str, encoder: Callable, topic: str = None, subscription:str = None):
     """
     Pattern: publish (topicA)
     :param broker: broker backend (gcp-pubsub or redis)
@@ -19,7 +19,7 @@ def publish(broker: str, encoder: Callable, topic: str = None):
     """
     with pubsubFactory(broker=broker)(topic=topic, log_name="publish") as pubsub:
         for msg in encoder():
-            pubsub.publish(msg)
+            pubsub.publish(msg, subscription=subscription)
 
 
 @graceful

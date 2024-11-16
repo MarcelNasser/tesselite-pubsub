@@ -1,12 +1,14 @@
 services:
   rabbitmq:
-    image: marcelndeffo/tools:alpine-rabbitmq
+    image: rabbitmq:3-management
     hostname: tesselite
     container_name: rabbitmq
     ports:
       - '5672:5672'
+      - '15672:15672'
     volumes:
       - rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq.conf.sample:/etc/rabbitmq/conf.d/rabbitmq.conf
     networks:
       tesselite-network:
         ipv4_address: 10.30.0.2

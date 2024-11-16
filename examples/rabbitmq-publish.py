@@ -15,5 +15,5 @@ def encoder():
 
 
 if __name__ == '__main__':
-    publish(broker='rabbitmq', encoder=encoder)
+    publish(broker='rabbitmq', encoder=encoder, topic='tesselite.test.t.topic',subscription='tesselite.test.q.test')
 
