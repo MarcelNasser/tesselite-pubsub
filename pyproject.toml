@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "tesselite-pubsub"
-version = "0.2.1"
+version = "0.2.2"
 description = "general sugarcoat for all pubsub flavors."
 authors = ["Marcel Ndeffo <marcel.nasser@live.fr>"]
 license = "MIT"
 readme = "README.md"
+include = ["CHANGELOG.md"]
 packages = [{include = "tesselite"}]
 
 [tool.poetry.dependencies]
