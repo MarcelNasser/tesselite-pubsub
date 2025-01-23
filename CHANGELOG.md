@@ -1,5 +1,10 @@
 # Notes
 
+## [0.2.2]
+
+- bugfix: default rabbitmq routing key to wildcard
+
+
 ## [0.2.1]
 
 - chore: display host infos in logs 
