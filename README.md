@@ -20,13 +20,14 @@ The purpose of this library is to streamline the coding of Pubsub in a **single-
 | gcp-pubsub    | Google Cloud Pubsub | google-cloud-pubsub = "^2.26.1" |
 | redis         | Redis               | redis = "^5.1.1"                |
 | rabbitmq      | RabbitMQ            | pika = "^1.3.2"                 |
+| kafka         | Apache Kafka        | confluent-kafka = "^2.4.0"      |
 
 
 ### Unavailable Brokers:
 
-| internal name | official name       | client library                  |
-|---------------|---------------------|---------------------------------|
-| kafka         | Apache Kafka        | todo                            |
+| internal name  | official name    | client library |
+|----------------|------------------|----------------|
+| azure-eventhub | Azure Events Hub | todo           |
 
 
 ### Configuration
