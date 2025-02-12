@@ -38,5 +38,11 @@ class RabbitMQEnv:
     SUBSCRIPTION_NAME = 'tesselite'
     VHOST = '/'
 
+class KafkaEnv:
+    HOST = os.environ.get("KAFKA_HOST", "localhost")
+    PORT = int(os.environ.get("KAFKA_PORT", "9092"))
+    PASSWORD = os.environ.get("KAFKA_PASSWORD", "tesselite")
+    TOPIC_NAME = 'tesselite-pubsub'
+    SUBSCRIPTION_NAME = 'tesselite'
 
 
