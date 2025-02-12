@@ -6,13 +6,14 @@ from typing import Union
 import redis
 from typing import Callable
 import pika
+import kafka
 
 from google.api_core import exceptions as google_api_core_exceptions
 from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1 import SubscriberClient
 import socket
 
-from pika.exceptions import ProbableAuthenticationError, StreamLostError, IncompatibleProtocolError, \
+from pika.exceptions import ProbableAuthenticationError, IncompatibleProtocolError, \
     AMQPConnectionError, ConnectionWrongStateError
 
 from tesselite import Logger, App
@@ -226,7 +227,7 @@ class GCPPubSub(Pubsub):
         expected_errors=(google_api_core_exceptions.ServiceUnavailable,),
         noisy_errors=(google_api_core_exceptions.AlreadyExists,)
     )
-    def publish(self, msg: str):
+    def publish(self, msg: str, **kwargs):
         call = self._publisher_client.publish(self._topic_path, msg.encode() if isinstance(msg, str) else msg)
         return call.result()
 
@@ -346,6 +347,62 @@ class RabbitMQPubSub(Pubsub):
             self._channel.basic_ack(method_frame.delivery_tag)
 
 
+class KafkaPubSub(Pubsub):
+    def __init__(self, topic: str, log_name: str = "kafka-pubsub"):
+        from tesselite import Logger
+        from tesselite.config import KafkaEnv
+        self.logger = Logger(log_name)
+        self.logger.debug("loading ..")
+        self._env = KafkaEnv()
+        self._topic = topic if topic else self._env.TOPIC_NAME
+        self.logger.info("\n"
+                         f"\tBROKER: KAFKA\n"
+                         f"\tTOPIC: {self._topic}\n"
+                         f"\tHOST: {self._env.HOST}\n"
+                         f"\tPORT: {self._env.PORT}\n"
+                         f"\tCREDENTIALS: "
+                         f"( {'hidden' if self._env.PASSWORD else 'empty'} )"
+        )
+
+    @connexion(
+        expected_errors=(ProbableAuthenticationError,
+                         IncompatibleProtocolError,
+                         AMQPConnectionError,
+                         ConnectionWrongStateError),
+        noisy_errors=())
+    def open(self):
+        return
+
+    def close(self):
+        return
+
+    @connexion(
+        expected_errors=(ProbableAuthenticationError, IncompatibleProtocolError,
+                         AMQPConnectionError, ConnectionWrongStateError),
+        noisy_errors=())
+    def check_subscription(self, subscription):
+        return
+
+    def check_connection(self):
+        return f'{self._env.HOST}:{self._env.PORT}'
+
+    @connexion(
+        expected_errors=(), noisy_errors=())
+    def publish(self, msg: str, subscription:str='*'):
+        producer = kafka.KafkaProducer(bootstrap_servers=self.check_connection(), acks='all')
+        self.logger.debug(f"sending .. {msg}")
+        producer.send(self._env.TOPIC_NAME, value=msg.encode())
+
+    @connexion(
+        expected_errors=(), noisy_errors=())
+    def consume(self, callback: Callable, deadLetter: str = None, subscription='0'):
+        consumer = kafka.KafkaConsumer(self._env.TOPIC_NAME,
+                                       bootstrap_servers=self.check_connection(),
+                                       group_id=subscription)
+        for body in consumer:
+            callback(body.decode())
+
+
 def pubsubFactory(broker: str = App.BrokerType) -> Union[type(RedisPubsub), type(GCPPubSub)]:
     """creates a publisher object
     :type broker: str: broker backend.
@@ -360,6 +417,8 @@ def pubsubFactory(broker: str = App.BrokerType) -> Union[type(RedisPubsub), type
         return GCPPubSub
     elif broker.upper() == "RABBITMQ":
         return RabbitMQPubSub
+    elif broker.upper() == "KAFKA":
+        return KafkaPubSub
     else:
         App.Logger.fatal(f"Broker type <{broker}> not available yet.")
         exit(1)

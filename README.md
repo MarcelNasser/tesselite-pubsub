@@ -3,7 +3,7 @@
 General sugarcoat for all pubsub flavors.
 
 
-## purpose
+## Purpose
 Publish Subscribe is a pretty simple mechanism understandable by any human. For example, it is the ruling mechanism of all social networks. 
 
 But, in Python, pubsub is very complex to code given the variety of broker technologies (redis, rabbitMQ, kafka, GCP PubSub, Azure Event Hubs..)
@@ -11,27 +11,44 @@ But, in Python, pubsub is very complex to code given the variety of broker techn
 The purpose of this library is to streamline the coding of Pubsub in a **single-line** call!
 
 
-## usage
+## Usage
 
 ### Available Brokers:
 
 | internal name | official name       | client library                  |
 |---------------|---------------------|---------------------------------|
-| gcp-pubsub    | Goggle Cloud Pubsub | google-cloud-pubsub = "^2.26.1" |
+| gcp-pubsub    | Google Cloud Pubsub | google-cloud-pubsub = "^2.26.1" |
 | redis         | Redis               | redis = "^5.1.1"                |
 | rabbitmq      | RabbitMQ            | pika = "^1.3.2"                 |
+| kafka         | Apache Kafka        | confluent-kafka = "^2.4.0"      |
 
 
 ### Unavailable Brokers:
 
-| internal name | official name       | client library                  |
-|---------------|---------------------|---------------------------------|
-| kafka         | Apache Kafka        | todo                            |
+| internal name  | official name    | client library |
+|----------------|------------------|----------------|
+| azure-eventhub | Azure Events Hub | todo           |
 
 
-### low level usage
+### Configuration
 
-#### consume
+| variable name     | purpose                | brokers                | default value    |
+|-------------------|------------------------|------------------------|------------------|
+| HOST              | server's address       | redis, rabbitmq, kafka | localhost        |
+| PORT              | server's port          | redis, rabbitmq, kafka | redis:6379       |
+| -                 | -                      | -                      | rabbitmq:5672    |
+| -                 | -                      | -                      | kafka:9092       |
+| USER              | server username        | redis, rabbitmq        | tesselite        |
+| PASSWORD          | server password        | redis, rabbitmq, kafka | tesselite        |
+| TOPIC_NAME        | pubsub topic           | *                      | tesselite-pubsub |
+| SUBSCRIPTION_NAME | pubsub name            | *                      | tesselite        |
+| VHOST             | server virtualhost     | rabbitmq               | /                |
+| DB                | server database number | redis                  | 0                |
+
+
+### Low level usage
+
+#### Consume
 
 ````python
 from tesselite.pubsub import pubsubFactory
@@ -45,7 +62,7 @@ with pubsubFactory(broker="gcp-pubsub")(topic="tesselite-pubsub", log_name="cons
 
 ````
 
-#### publish
+#### Publish
 
 ````python
 from tesselite.pubsub import pubsubFactory
@@ -61,7 +78,7 @@ with pubsubFactory(broker="gcp-pubsub")(topic="tesselite-pubsub", log_name="publ
 ````
 
 
-### high level usage
+### High level usage
 
 #### consume
 
@@ -90,7 +107,7 @@ if __name__ == '__main__':
 ````
 
 
-## behavior
+## Expected Behavior
 
 ### Best Case Scenario
 

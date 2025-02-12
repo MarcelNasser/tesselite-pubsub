@@ -1,5 +1,11 @@
 # Notes
 
+## [0.2.3]
+
+- add: kafka support
+- chore: document environment variables
+
+
 ## [0.2.2]
 
 - bugfix: default rabbitmq routing key to wildcard
