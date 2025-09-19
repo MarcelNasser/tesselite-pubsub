@@ -3,6 +3,9 @@
 General sugarcoat for all pubsub flavors.
 
 
+![ci](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/ci.yml/badge.svg "automated ci")  ![cd](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/release.yml/badge.svg "automated release")
+
+
 ## Purpose
 Publish Subscribe is a pretty simple mechanism understandable by any human. For example, it is the ruling mechanism of all social networks. 
 
@@ -149,21 +152,19 @@ To guarantee a fail-proof onboarding to the broker:
 ### Worst Case Scenario
 
 a. 
-Messages are lost if the subscription doesn't exist →
+Messages are lost if the subscription doesn't exist 
+→
 This is an incurable limitation of pubsub mechanics. 
 
 b. 
-The broker `redis` would drop messages if the consumer disconnects →
+The broker `redis` would drop messages if the consumer disconnects 
+→
 This seems to be related to 'livestream' behavior of Redis.
 
 c.
-The broker `gcp-pubsub` would freeze for a random timeperiod if no messages are available →
+The broker `gcp-pubsub` would freeze for a random timeperiod if no messages are available 
+→
 This would generate sluggishness from time to time.
 
-Therefore, the broker `redis` is ideal for livestreaming but not for message retention critical PaaS.
-Therefore, the broker `gcp-pubsub` is ideal for message retention critical PaaS but maybe sluggish for livestream.
-
-
-![ci](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/ci.yml/badge.svg "automated ci")
-
-![cd](https://github.com/MarcelNasser/tesselite-pubsub/actions/workflows/release.yml/badge.svg "automated release")
+* Therefore, the broker `redis` is ideal for livestreaming but not for message retention critical PaaS.
+* Therefore, the broker `gcp-pubsub` is ideal for message retention critical PaaS but maybe sluggish for livestream.
